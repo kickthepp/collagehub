@@ -1,5 +1,28 @@
 const { useState, useRef, useEffect } = React;
-const { Download, Upload, Grid, X, Move, ZoomIn, ZoomOut, ArrowLeft, ArrowRight } = lucide;
+
+// Icon components
+const Icon = ({ d, size = 24 }) => 
+  React.createElement('svg', { 
+    xmlns: 'http://www.w3.org/2000/svg', 
+    width: size, 
+    height: size, 
+    viewBox: '0 0 24 24', 
+    fill: 'none', 
+    stroke: 'currentColor', 
+    strokeWidth: 2, 
+    strokeLinecap: 'round', 
+    strokeLinejoin: 'round' 
+  }, React.createElement('path', { d }));
+
+const Download = ({ size }) => Icon({ d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3', size });
+const Upload = ({ size }) => Icon({ d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12', size });
+const Grid = ({ size }) => Icon({ d: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z', size });
+const X = ({ size }) => Icon({ d: 'M18 6L6 18M6 6l12 12', size });
+const Move = ({ size }) => Icon({ d: 'M5 9l-3 3 3 3M9 5l3-3 3 3m0 14l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20', size });
+const ZoomIn = ({ size }) => Icon({ d: 'M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0zM10 7v6m-3-3h6', size });
+const ZoomOut = ({ size }) => Icon({ d: 'M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0zM7 10h6', size });
+const ArrowLeft = ({ size }) => Icon({ d: 'M19 12H5M12 19l-7-7 7-7', size });
+const ArrowRight = ({ size }) => Icon({ d: 'M5 12h14M12 5l7 7-7 7', size });
 
 function CollageMaker() {
   const [images, setImages] = useState([]);
@@ -285,15 +308,23 @@ function CollageMaker() {
 
   const availableLayouts = layouts[Math.min(images.length, 6)] || [];
 
-  return React.createElement('div', { className: "min-h-screen bg-black p-4", style: {fontFamily: 'Arial, sans-serif'} },
+  return React.createElement('div', { 
+    className: "min-h-screen bg-black p-4", 
+    style: {fontFamily: 'Arial, sans-serif'} 
+  },
     React.createElement('div', { className: "max-w-4xl mx-auto" },
       React.createElement('div', { className: "bg-zinc-900 shadow-2xl p-1 mb-6" },
         React.createElement('div', { className: "bg-black p-6" },
-          React.createElement('h1', { className: "text-4xl font-black text-center mb-2 text-white", style: {textShadow: '0 0 10px rgba(255,153,0,0.5)'} },
+          React.createElement('h1', { 
+            className: "text-4xl font-black text-center mb-2 text-white", 
+            style: {textShadow: '0 0 10px rgba(255,153,0,0.5)'} 
+          },
             React.createElement('span', { className: "text-white" }, 'COLLAGE'),
             React.createElement('span', { className: "bg-orange-500 text-black px-3 py-1 rounded-lg ml-2" }, 'HUB')
           ),
-          React.createElement('p', { className: "text-center text-gray-400 mb-6 font-semibold" }, 'Create beautiful photo collages instantly'),
+          React.createElement('p', { className: "text-center text-gray-400 mb-6 font-semibold" }, 
+            'Create beautiful photo collages instantly'
+          ),
           React.createElement('input', {
             type: 'file',
             ref: fileInputRef,
@@ -309,9 +340,11 @@ function CollageMaker() {
             React.createElement(Upload, { size: 24 }),
             `UPLOAD PHOTOS (${images.length})`
           ),
-          // Continue with rest of the component...
+          
           images.length > 0 && React.createElement('div', { className: "mb-6 bg-zinc-900 p-4" },
-            React.createElement('h3', { className: "font-black mb-3 flex items-center gap-2 text-orange-500 text-sm uppercase tracking-widest" },
+            React.createElement('h3', { 
+              className: "font-black mb-3 flex items-center gap-2 text-orange-500 text-sm uppercase tracking-widest" 
+            },
               React.createElement(Grid, { size: 18 }),
               'ASPECT RATIO'
             ),
@@ -320,38 +353,74 @@ function CollageMaker() {
                 React.createElement('button', {
                   key: key,
                   onClick: () => setAspectRatio(key),
-                  className: `py-2 px-3 font-bold transition text-sm uppercase ${aspectRatio === key ? 'bg-orange-500 text-black' : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700 hover:text-white'}`
+                  className: `py-2 px-3 font-bold transition text-sm uppercase ${
+                    aspectRatio === key 
+                      ? 'bg-orange-500 text-black' 
+                      : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700 hover:text-white'
+                  }`
                 }, label)
               )
             )
           ),
-          images.length > 0 && layout && React.createElement('div', { className: "bg-zinc-900 p-4 mb-6" },
-            React.createElement('h3', { className: "font-black mb-3 text-center text-orange-500 text-sm uppercase tracking-widest" }, 'PREVIEW'),
-            React.createElement('div', { className: "flex justify-center" },
-              React.createElement('canvas', {
-                ref: canvasRef,
-                onMouseDown: handleInteractionStart,
-                onMouseMove: handleInteractionMove,
-                onMouseUp: handleInteractionEnd,
-                onMouseLeave: handleInteractionEnd,
-                onTouchStart: handleInteractionStart,
-                onTouchMove: handleInteractionMove,
-                onTouchEnd: handleInteractionEnd,
-                className: `max-w-full h-auto ring-2 ring-zinc-700 ${editingCell !== null ? 'cursor-move touch-none' : 'cursor-default'}`
-              })
+
+          availableLayouts.length > 0 && React.createElement('div', { className: "mb-6 bg-zinc-900 p-4" },
+            React.createElement('h3', { 
+              className: "font-black mb-3 text-orange-500 text-sm uppercase tracking-widest" 
+            }, `LAYOUT (${images.length} PHOTOS)`),
+            React.createElement('div', { className: "grid grid-cols-2 sm:grid-cols-3 gap-3" },
+              availableLayouts.map((l, i) =>
+                React.createElement('button', {
+                  key: i,
+                  onClick: () => setLayout(l),
+                  className: `p-3 font-bold transition flex flex-col items-center gap-2 ${
+                    layout?.name === l.name
+                      ? 'bg-orange-500 text-black'
+                      : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700 hover:text-white'
+                  }`
+                },
+                  React.createElement('svg', { 
+                    viewBox: "0 0 20 20", 
+                    className: "w-12 h-12", 
+                    fill: "currentColor" 
+                  },
+                    React.createElement('path', { d: l.icon })
+                  ),
+                  React.createElement('span', { className: "text-xs uppercase" }, l.name)
+                )
+              )
             )
           ),
-          images.length > 0 && layout && React.createElement('button', {
-            onClick: downloadCollage,
-            className: "w-full bg-orange-500 text-black py-4 font-black flex items-center justify-center gap-2 hover:bg-orange-600 active:bg-orange-700 transition text-lg tracking-widest"
-          },
-            React.createElement(Download, { size: 24 }),
-            'DOWNLOAD COLLAGE'
-          )
-        )
-      )
-    )
-  );
-}
 
-ReactDOM.render(React.createElement(CollageMaker), document.getElementById('root'));
+          images.length > 0 && React.createElement('div', { className: "mb-6 bg-zinc-900 p-4" },
+            React.createElement('h3', { 
+              className: "font-black mb-3 text-orange-500 text-sm uppercase tracking-widest" 
+            }, 'PHOTOS - TAP TO EDIT'),
+            React.createElement('div', { className: "grid grid-cols-3 sm:grid-cols-4 gap-2" },
+              images.map((img, i) =>
+                React.createElement('div', { key: i, className: "relative group" },
+                  React.createElement('button', {
+                    onClick: () => setEditingCell(editingCell === i ? null : i),
+                    className: `w-full h-24 overflow-hidden transition ${
+                      editingCell === i ? 'ring-4 ring-orange-500' : 'ring-1 ring-zinc-700'
+                    }`
+                  },
+                    React.createElement('img', {
+                      src: img.src,
+                      alt: `Upload ${i + 1}`,
+                      className: "w-full h-full object-cover"
+                    })
+                  ),
+                  
+                  React.createElement('div', { className: "absolute top-1 right-1 flex gap-1" },
+                    React.createElement('button', {
+                      onClick: () => removeImage(i),
+                      className: "bg-red-600 text-white shadow-sm p-1 hover:bg-red-700 transition"
+                    },
+                      React.createElement(X, { size: 16 })
+                    )
+                  ),
+
+                  React.createElement('div', { className: "absolute bottom-1 left-1 right-1 flex gap-1" },
+                    i > 0 && React.createElement('button', {
+                      onClick: () => moveImage(i, i - 1),
+                      className: "flex-1 bg-zinc
