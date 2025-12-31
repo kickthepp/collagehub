@@ -9,4 +9,4 @@ Create beautiful photo collages instantly with drag-and-drop editing.
 - Zoom and stretch controls
 - Export high-quality collages
 
-Visit: https://yourusername.github.io/collagehub
+fully vibecoded just for me so dont judge allow me
